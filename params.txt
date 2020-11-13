@@ -1,0 +1,6 @@
+screen width: 29.5 cm
+screen height: 16.5 cm
+W data: 0.25, 0.50, 0.75, 1.00
+A data: 2, 3, 4, 5
+
+实验平台：http://39.97.170.246/fitts/
