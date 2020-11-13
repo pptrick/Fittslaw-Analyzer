@@ -1,16 +1,18 @@
 import math
-from . import file_csv
 import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.linear_model import LinearRegression
 
+from . import parser
+from . import Anova
+
 class Processor(object):
     def __init__(self, dir):
-        self.file_list = file_csv.getFiles(dir)
+        self.file_list = parser.getFiles(dir)
         self.raw_data = []
         self.device = set()
         for file in self.file_list:
-            file_data = file_csv.parseFile(file)
+            file_data = parser.parseFile(file)
             if file_data == None or len(file_data)==0:
                 print('warning: file ', file, ' cannot be read!')
                 continue
@@ -70,6 +72,9 @@ class Processor(object):
         print("intercept(a) : ", model.intercept_)
         print("slope(b) : ", model.coef_[0])
         print(" ")
+
+    def anova(self, params=['name', 'device']):
+        Anova.multi_analyze(self.raw_data, params)
 
     def getRawData(self):
         return self.raw_data
