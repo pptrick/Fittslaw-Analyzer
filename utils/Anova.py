@@ -3,6 +3,9 @@ from statsmodels.formula.api import ols
 from statsmodels.stats.anova import anova_lm
 
 def multi_analyze(raw_data, params):
+    for d in raw_data:
+        d['width'] = str(d['width'])
+        d['distance'] = str(d['distance'])
     pd_data = pd.DataFrame(raw_data)
     columns = pd_data.columns
     assert('time' in columns)
@@ -16,3 +19,6 @@ def multi_analyze(raw_data, params):
     print("====================== anova analyze report =======================")
     print(anova_results)
     print(" ")
+    for d in raw_data:
+        d['width'] = float(d['width'])
+        d['distance'] = float(d['distance'])
