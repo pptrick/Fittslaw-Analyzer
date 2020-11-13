@@ -1,6 +1,7 @@
 import math
-import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression
 
 from . import parser
@@ -47,7 +48,7 @@ class Processor(object):
         plt.legend(loc = 'best')
         plt.show()
 
-    def regression(self, device):
+    def _regression(self, device):
         if device not in self.device:
             print(f"No device named: {device}, please check your input!")
             return 
@@ -73,8 +74,16 @@ class Processor(object):
         print("slope(b) : ", model.coef_[0])
         print(" ")
 
+    def regression(self):
+        for device in self.device:
+            self._regression(device)
+
     def anova(self, params=['name', 'device']):
         Anova.multi_analyze(self.raw_data, params)
+
+    def print_data(self):
+        pd_data = pd.DataFrame(self.raw_data)
+        print(pd_data)
 
     def getRawData(self):
         return self.raw_data
