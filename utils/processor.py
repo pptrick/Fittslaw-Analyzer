@@ -27,7 +27,7 @@ class Processor(object):
             fitts_d['name'] = raw_d['name']
             fitts_d['device'] = raw_d['device']
             self.device.add(fitts_d['device'])
-            fitts_d['ID'] = math.log2(2*raw_d['distance']/raw_d['width'])
+            fitts_d['ID'] = math.log2(raw_d['distance']/raw_d['width'] + 1)
             fitts_d['MT'] = raw_d['time']
             fitts_data.append(fitts_d)
         return fitts_data
