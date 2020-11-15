@@ -59,7 +59,7 @@ def parseFile(path):
                     # set new group according to current row
                     _setGroupInfo(groupInfo, row, mapping_table)
                     time = []
-                if row[6] == 'true': # count correct hit only
+                if row[6] == 'true' and int(row[5])>0: # count correct hit only and time must be positive
                     time.append(int(row[5]))
     except IOError:
         print("can not open ", path, " as a csv file")
