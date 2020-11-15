@@ -3,13 +3,14 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression
-
+from prettytable import PrettyTable, MARKDOWN
 from . import parser
 from . import Anova
 
 class Processor(object):
     def __init__(self, dir):
         self.file_list = parser.getFiles(dir)
+        self.dir = dir
         self.raw_data = []
         self.device = set()
         for file in self.file_list:
@@ -56,23 +57,42 @@ class Processor(object):
         ID = []
         MT = []
         name = set()
+        name.add('all')
+        group = {}
+        group['all'] = [[], []] # [ID], [MT]
         for d in self.fitts_data:
             if d['device'] == device:
-                ID.append(d['ID'])
-                MT.append(d['MT'])
-                name.add(d['name'])
-        ID = np.array(ID).reshape((-1,1))
-        MT = np.array(MT)
-        # generate regression
-        model = LinearRegression().fit(ID, MT)
-        # print report
-        print("========== MT=a+bID regression report ===========")
-        print("using device: ", device)
-        print("users: ", name)
-        print("coefficient of determination(r^2) : ", model.score(ID, MT))
-        print("intercept(a) : ", model.intercept_)
-        print("slope(b) : ", model.coef_[0])
+                if(d['name']) not in name:
+                    name.add(d['name'])
+                    group[d['name']] = [[], []]
+                group[d['name']][0].append(d['ID'])
+                group[d['name']][1].append(d['MT'])
+                group['all'][0].append(d['ID'])
+                group['all'][1].append(d['MT'])
+        table = PrettyTable()
+        table.field_names = ["user", "a", 'b', 'r^2']
+        table.set_style(MARKDOWN)
+        print(f" regression report on [{device}] ")
+        print("(This table can be copied to markdown as a table directly)")
+        for result in group:
+            name = result
+            ID = np.array(group[result][0]).reshape((-1,1))
+            MT = np.array(group[result][1])
+            # generate regression
+            model = LinearRegression().fit(ID, MT)
+            a = model.intercept_
+            b = model.coef_[0]
+            # print report
+            table.add_row([name, a, b, model.score(ID, MT)])
+            x = np.linspace(1.8,4.1)
+            plt.scatter(ID,MT, marker='o')
+            plt.plot(x, a+b*x, label=name)
+        print(table)
         print(" ")
+        plt.legend()
+        plt.savefig(f"./{device}_regress.png")
+        plt.clf()
+            
 
     def regression(self):
         for device in self.device:
@@ -90,4 +110,3 @@ class Processor(object):
 
     def getFittsData(self):
         return self.fitts_data
-
