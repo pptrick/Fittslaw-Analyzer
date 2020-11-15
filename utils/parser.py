@@ -1,12 +1,15 @@
 import csv
 import os
 import copy
+import re
 
 def getFiles(dir):
     file_list = []
+    file_pattern = r"(.*)\.csv"
     for root, _, files in os.walk(dir):
         for f in files:
-            file_list.append(root + '/' + f)
+            if re.match(file_pattern, f) != None:
+                file_list.append(root + '/' + f)
     return file_list
 
 def _isSameGroup(groupInfo, row, mapping_table):
