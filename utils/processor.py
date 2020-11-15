@@ -69,6 +69,7 @@ class Processor(object):
                 group[d['name']][1].append(d['MT'])
                 group['all'][0].append(d['ID'])
                 group['all'][1].append(d['MT'])
+        # show data
         table = PrettyTable()
         table.field_names = ["user", "a", 'b', 'r^2']
         table.set_style(MARKDOWN)
