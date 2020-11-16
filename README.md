@@ -33,13 +33,17 @@ pip install -r requirements.txt
 
 ### 使用
 
-把所有数据(.csv)放在一个路径下，比如./data，运行demo.py即可：
+把所有数据(.csv)放在一个路径下，比如./data，这里只需要保证每个.csv文件是合法格式即可（比如从实验平台上直接copy的结果），工具会自动进行解析。
+
+运行demo.py即可：
 
 ```shell
 python demo.py ./data [-r] [-a] [-g] [-p]
 ```
 
 用`-h`查看帮助。
+
+`-r`可进行回归分析，回归分析的结果将在命令行中以markdown表格格式打印，并同时绘制拟合直线存于根目录下。
 
 这里`-a`选项为anova方差分析，默认是分析“用户(name)”和“设备(device)”两个因素对时间的影响，如果需要更改可以在`-a`后加入，比如要分析device和width：
 
