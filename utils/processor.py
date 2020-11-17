@@ -46,6 +46,8 @@ class Processor(object):
         # draw
         for device in data_buf:
             plt.scatter(data_buf[device][0], data_buf[device][1], marker = 'o', s = 40 ,label = device)
+            plt.xlabel('ID = log2(A/W+1)')
+            plt.ylabel('MT')
         plt.legend(loc = 'best')
         plt.show()
 

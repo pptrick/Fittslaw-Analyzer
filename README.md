@@ -1,5 +1,5 @@
 # Fittslaw-Analyzer
-**Fitts law**是人机交互领域很重要的定理之一，主要研究使用指定设备到达并点击一个目标的时间，与当前设备位置和目标距离(A)以及目标大小(W)的关系。Fitts定律用公式表述为：t = a + b log2(A/W + 1)。
+**Fitts law**是人机交互领域很重要的定理之一，由保罗·费茨（Paul M. Fitts）博士受信息论启发提出。该定律主要研究使用指定设备到达并点击一个目标的时间，与当前设备位置和目标距离(A)以及目标大小(W)的关系。Fitts定律用公式表述为：t = a + b log2(A/W + 1)。
 
 Fitts law实验主要有以下步骤：
 
@@ -66,3 +66,10 @@ python demo.py ./data -a device width
 这是一张多因素方差分析表，是`anova_lm`生成的分析结果。第一列`factor_1`、`factor_2`表示参与分析的因素，Residual表示误差。第一行df表示自由度，sum_sq表示离差平方和，mean_sq表示均方离差，F表示F值，PR(>F)表示F值所对应的显著水平α。
 
 实验中一般用PR或者F值判断某个因素对结果的影响程度，PR<0.05认为有影响，否则不能拒绝0假设（认为不同组数据其实是同分布）。
+
+## 联系作者
+
+项目作者为：@pptrick(Pan Chuanyu)	all rights reserved
+
+有任何问题可以邮件联系：pancy17@mails.tsinghua.edu.cn
+
