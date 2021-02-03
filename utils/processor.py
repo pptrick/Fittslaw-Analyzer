@@ -54,7 +54,7 @@ class Processor(object):
         plt.legend(loc = 'best')
         plt.show()
 
-    def _regression(self, device):
+    def _regression(self, device, all_group):
         if device not in self.device:
             print(f"No device named: {device}, please check your input!")
             return 
@@ -64,7 +64,8 @@ class Processor(object):
         name = set()
         name.add('all')
         group = {}
-        group['all'] = [[], []] # [ID], [MT]
+        All = {} # [ID]: [MT]
+        # get data from fitts data
         for d in self.fitts_data:
             if d['device'] == device:
                 if(d['name']) not in name:
@@ -72,8 +73,16 @@ class Processor(object):
                     group[d['name']] = [[], []]
                 group[d['name']][0].append(d['ID'])
                 group[d['name']][1].append(d['MT'])
-                group['all'][0].append(d['ID'])
-                group['all'][1].append(d['MT'])
+                if d['ID'] in All:
+                    All[d['ID']].append(d['MT'])
+                else:
+                    All[d['ID']] = [d['MT']]
+        # process total data
+        group['**all**'] = [[], []] #[ID], [MT]
+        for ID in All:
+            group['**all**'][0].append(ID)
+            group['**all**'][1].append(parser.avg(All[ID]))
+        all_group[device] = group['**all**']
         # show data
         table = PrettyTable()
         table.field_names = ["user", "a", 'b', 'r^2']
@@ -98,13 +107,34 @@ class Processor(object):
         print(table)
         print(" ")
         plt.legend()
-        plt.savefig(f"./{device}_regress.png")
+        plt_name = f"{device}_regress"
+        plt.title(plt_name)
+        plt.savefig("./" + plt_name + ".png")
+        plt.clf()
+
+    def _plt_total(self, all_group):
+        for device in all_group:
+            ID = np.array(all_group[device][0]).reshape((-1,1))
+            MT = np.array(all_group[device][1])
+            model = LinearRegression().fit(ID, MT)
+            a = model.intercept_
+            b = model.coef_[0]
+            x = np.linspace(1.8,4.1)
+            plt.scatter(ID,MT, marker='o')
+            plt.plot(x, a+b*x, label=device)
+        plt.xlabel('ID = log2(A/W+1)')
+        plt.ylabel('MT = time')
+        plt.legend()
+        plt.title("Regression Result")
+        plt.savefig("./total_regress.png")
         plt.clf()
             
-
     def regression(self):
+        all_group = {}
         for device in self.device:
-            self._regression(device)
+            all_group[device] = []
+            self._regression(device, all_group)
+        self._plt_total(all_group)
 
     def anova(self, params=['name', 'device']):
         Anova.multi_analyze(self.raw_data, params)

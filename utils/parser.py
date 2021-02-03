@@ -36,7 +36,7 @@ def _setGroupInfo(groupInfo, row, mapping_table):
     for index in mapping_table:
         groupInfo[mapping_table[index]] = row[index]
 
-def _avg(l):
+def avg(l):
     '''
     get the average value of a list or a sequence. \n
     If the input list is empty, return -1.
@@ -75,7 +75,7 @@ def parseFile(path):
                     # save previous group
                     if groupInfo['name'] != '' and groupInfo['device'] != '' :
                         groupInfo['trial'] = len(time)
-                        groupInfo['time'] = _avg(time)
+                        groupInfo['time'] = avg(time)
                         groupInfo['width'] = float(groupInfo['width'])
                         groupInfo['distance'] = float(groupInfo['distance'])
                         if groupInfo['time'] >= 0: # append legal data
