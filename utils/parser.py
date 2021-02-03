@@ -4,6 +4,10 @@ import copy
 import re
 
 def getFiles(dir):
+    '''
+    get all .csv files(filename) in dir and its subdirectory. \n
+    @return: A list of filenames.
+    '''
     file_list = []
     file_pattern = r"(.*)\.csv"
     for root, _, files in os.walk(dir):
@@ -13,23 +17,40 @@ def getFiles(dir):
     return file_list
 
 def _isSameGroup(groupInfo, row, mapping_table):
+    '''
+    Judge whether current data instance is belong to current group. \n
+    A data instance is basically a row in the csv file. \n
+    In this task, data is devided into several groups.If two data instances are in a same group, their parameter of
+    'name', 'device', 'width', 'distance' must be the same. The only variable in one group that we care about is 'time' (and 'trial')
+    '''
     for index in mapping_table:
         if row[index] != groupInfo[mapping_table[index]]:
-            if index<4:
+            if index<4: # consider 'name', 'device', 'width', 'distance' only
                 return False
     return True
 
 def _setGroupInfo(groupInfo, row, mapping_table):
+    '''
+    set the recorder(dict) of current group with provided parameters
+    '''
     for index in mapping_table:
         groupInfo[mapping_table[index]] = row[index]
 
 def _avg(l):
+    '''
+    get the average value of a list or a sequence. \n
+    If the input list is empty, return -1.
+    '''
     if len(l)==0:
         return -1
     else:
         return sum(l)/len(l)
 
 def parseFile(path):
+    '''
+    Extract and process data from the file with the filename 'path'. \n
+    @return: A list of processed data. Each element in the list is a dict of one data group.
+    '''
     data = []
     mapping_table = {0:'name', 1:'device', 2:'width', 3:'distance', 4:'trial', 5:'time', 6:'correct'}
     try:

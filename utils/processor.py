@@ -11,14 +11,15 @@ class Processor(object):
     def __init__(self, dir):
         self.file_list = parser.getFiles(dir)
         self.dir = dir
-        self.raw_data = []
-        self.device = set()
+        self.raw_data = [] # raw data directly obtained from the parser
+        self.device = set() # types of device
         for file in self.file_list:
             file_data = parser.parseFile(file)
             if file_data == None or len(file_data)==0:
                 print('warning: file ', file, ' cannot be read!')
                 continue
             self.raw_data = self.raw_data + file_data
+        # generate fitts data from raw data
         self.fitts_data = self._genFittsData(self.raw_data) #{name, device, ID, MT}
 
     def _genFittsData(self, raw_data):
@@ -28,6 +29,8 @@ class Processor(object):
             fitts_d['name'] = raw_d['name']
             fitts_d['device'] = raw_d['device']
             self.device.add(fitts_d['device'])
+            # MT = a + b*ID
+            # T = a + b*log2(A/W + 1)
             fitts_d['ID'] = math.log2(raw_d['distance']/raw_d['width'] + 1)
             fitts_d['MT'] = raw_d['time']
             fitts_data.append(fitts_d)
@@ -47,7 +50,7 @@ class Processor(object):
         for device in data_buf:
             plt.scatter(data_buf[device][0], data_buf[device][1], marker = 'o', s = 40 ,label = device)
             plt.xlabel('ID = log2(A/W+1)')
-            plt.ylabel('MT')
+            plt.ylabel('MT = time')
         plt.legend(loc = 'best')
         plt.show()
 
@@ -90,6 +93,8 @@ class Processor(object):
             x = np.linspace(1.8,4.1)
             plt.scatter(ID,MT, marker='o')
             plt.plot(x, a+b*x, label=name)
+            plt.xlabel('ID = log2(A/W+1)')
+            plt.ylabel('MT = time')
         print(table)
         print(" ")
         plt.legend()
